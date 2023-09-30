@@ -59,12 +59,23 @@ struct List {
 			current->next = node;
 		}
 	}
-	void moveElement(int position, int steps) {		
+	void moveElement(int position, int steps) {
+		Node* element = nullptr;;
+		Node* previous = nullptr;
+		Node* next = nullptr;
 		for (int i = 0; i < steps; i++) {
-			Node* current = head;
-			Node* element = nullptr;;
-			Node* previous = nullptr;
-			Node* next = nullptr;
+			
+			if (position == getLength(head)) {
+				position = 1;
+				element->next = head;
+				head = element;
+				next->next = nullptr;
+				element = nullptr;
+				previous = nullptr;
+				next = nullptr;
+				continue;
+			}
+			Node* current = head;		
 			for (int i = 0; i < getLength(head); i++) {
 				if (i == position - 2) {
 					previous = current;
@@ -77,7 +88,13 @@ struct List {
 				}
 				current = current->next;
 			}
-			previous->next = next;
+			if (position != 1) {
+				previous->next = next;
+				
+			}
+			else {
+				head = next;
+			}
 			element->next = next->next;
 			next->next = element;
 			position++;
@@ -136,7 +153,6 @@ int main()
 	//list.pushByNumber(6, "Roman");
 	list.print();
 	cout << endl;
-	list.moveElement(2, 3);
 	list.print();
 
 }
