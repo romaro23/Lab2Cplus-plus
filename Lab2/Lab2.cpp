@@ -1,4 +1,4 @@
-
+#include <string>
 #include <iostream>
 using namespace std;
 
@@ -147,23 +147,59 @@ struct List {
 					previous = current;
 				}
 				current = current->next;
-				
+
 			}
 			previous->next = nullptr;
 			delete current;
 		}
-		else if (position > 1 && position < getLength(head)){
+		else if (position > 1 && position < getLength(head)) {
 			for (int i = 0; i < position - 1; i++) {
 				if (i == position - 2) {
 					previous = current;
 				}
-				current = current->next;								
+				current = current->next;
 			}
 			previous->next = current->next;
 			delete current;
 		}
 		else {
 			cout << "Wrong position" << endl;
+		}
+	}
+	void deleteEveryNElement(int step) {
+		int count = 0;
+		int length = getLength(head);
+		for (int i = step; i <= length; i += step) {
+			deleteByNumber(i - count);
+			count++;
+		}
+	}
+	void sortByIncrease() {	
+		string temp;
+		for (int i = 0; i < getLength(head); i++) {
+			Node* node = head;
+			while (node->next) {
+				if (stoi(node->surname) > stoi(node->next->surname)) {
+					temp = node->surname;
+					node->surname = node->next->surname;
+					node->next->surname = temp;
+				}
+				node = node->next;
+			}
+		}	
+	}
+	void sortByDecrease() {
+		string temp;
+		for (int i = 0; i < getLength(head); i++) {
+			Node* node = head;
+			while (node->next) {
+				if (stoi(node->surname) < stoi(node->next->surname)) {
+					temp = node->surname;
+					node->surname = node->next->surname;
+					node->next->surname = temp;
+				}
+				node = node->next;
+			}
 		}
 	}
 	void clearList() {
@@ -218,24 +254,68 @@ List commonElements(List list1, List list2) {
 int main()
 {
 	List list1;
-	list1.pushBack("1");
+	list1.pushBack("5");
 	list1.pushBack("2");
 	list1.pushBack("3");
+	list1.pushBack("1");
 	list1.pushBack("4");
-	list1.pushBack("5");
 	list1.print();
-	List list2;
-	list2.pushBack("6");
-	list2.pushBack("7");
-	list2.pushBack("8");
-	list2.pushBack("9");
-	list2.pushBack("10");
+	//1
+	cout << "Push element up" << endl;
+	list1.pushUp("6");
+	list1.print();
+	//2
+	cout << "Push element by number" << endl;
+	list1.pushByNumber(6, "7");
+	list1.print();
+	//3
+	cout << "Move element to left" << endl;
+	list1.moveToLeft(2, 1);
+	list1.print();
+
+	cout << "Move element to right" << endl;
+	list1.moveToRight(1, 5);
+	list1.print();
+	//4
+	cout << "Delete element by number" << endl;
+	list1.deleteByNumber(6);
+	list1.print();
+	//5
+	cout << "Delete every n element" << endl;
+	list1.deleteEveryNElement(2);
+	list1.print();
+	//6
+	cout << "Sort by increasing" << endl;
+	list1.sortByIncrease();
+	list1.print();
+
+	cout << "Sort by decreasing" << endl;
+	list1.sortByDecrease();
+	list1.print();
+	//7
+	cout << "Creating a copy" << endl;
+	List list2 = list1.createCopy();
+	list1.print();
 	list2.print();
-	combineLists(list1, list2);
+	//8
+	cout << "Clearing the list" << endl;
+	list1.clearList();
 	list1.print();
-	List list3 = commonElements(list1, list2);
+	list2.print();
+	List list3;
+	list3.pushBack("6");
+	list3.pushBack("4");
+	list3.pushBack("10");
+	//9
+	List list4 = list2.createCopy();
+	cout << "Combine two lists" << endl;
+	list2.print();
 	list3.print();
-	List list4 = list3.createCopy();
-	list4.print();
+	combineLists(list2, list3);
+	list2.print();
+	//10
+	cout << "List of common elements" << endl;
+	List common = commonElements(list3, list4);
+	common.print();
 }
 
