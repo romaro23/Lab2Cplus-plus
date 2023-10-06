@@ -22,8 +22,8 @@ struct List {
 	Node* head;
 	List() : head(nullptr) {}
 	
-	void pushBack(string surname) {
-		Node* node = new Node(surname);
+	void pushBack(string _surname) {
+		Node* node = new Node(_surname);
 		if (head == nullptr) {
 			head = node;
 		}
@@ -36,8 +36,8 @@ struct List {
 		}
 
 	}
-	void pushUp(string surname) {
-		Node* node = new Node(surname);
+	void pushUp(string _surname) {
+		Node* node = new Node(_surname);
 		if (head == nullptr) {
 			head = node;
 		}
@@ -46,8 +46,8 @@ struct List {
 			head = node;
 		}
 	}
-	void pushByNumber(int position, string surname) {
-		Node* node = new Node(surname);
+	void pushByNumber(int position, string _surname) {
+		Node* node = new Node(_surname);
 		if (head == nullptr) {
 			head = node;
 		}
@@ -228,6 +228,88 @@ struct List {
 		return newList;
 	}
 };
+struct CircularList {
+	Node* head;
+	int size;
+	CircularList() : head(nullptr), size(0) {}
+	void pushBack(string _surname) {
+		Node* node = new Node(_surname);
+		if (head == nullptr) {
+			head = node;
+			size++;
+		}
+		else {
+			Node* current = head;
+			for (int i = 0; i < size - 1; i++) {
+				current = current->next;
+			}
+			current->next = node;
+			node->next = head;
+			size++;
+		}
+	}
+	void deleteNode(int position) {
+		if (!head) {
+			cout << "The list is empty" << endl;
+			return;
+		}
+		Node* current = head;
+		Node* previous = nullptr;
+		if (position == 1) {
+			if (size == 1) {
+				delete head;
+			}
+			else {
+				
+				for (int i = 0; i < size - 1; i++) {
+					current = current->next;
+				}
+				
+				head = current->next->next;
+				current->next = head;
+				current = current->next;
+			}
+			
+		}
+		else if (position == size) {
+			for (int i = 0; i < position - 1; i++) {
+				if (i == position - 2) {
+					previous = current;
+				}
+				current = current->next;
+			}
+			previous->next = head;
+			delete current;
+		}
+		else {
+			for (int i = 0; i < position - 1; i++) {
+				if (i == position - 2) {
+					previous = current;
+				}
+				current = current->next;
+			}
+			
+			if (current == head) {
+				head = previous;
+				previous->next = current->next;
+			}
+			else {
+				previous->next = current->next;
+			}
+
+			delete current;
+		}
+		size--;
+	}
+	void print() {
+		Node* node = head;
+		for (int i = 0; i < size; i++) {
+			cout << node->surname << " ";
+			node = node->next;
+		}
+		cout << endl;
+	}
+};
 void combineLists(List list1, List list2) {
 	Node* node = list1.head;
 	Node* head = list2.head;
@@ -253,69 +335,171 @@ List commonElements(List list1, List list2) {
 }
 int main()
 {
-	List list1;
-	list1.pushBack("5");
-	list1.pushBack("2");
-	list1.pushBack("3");
-	list1.pushBack("1");
-	list1.pushBack("4");
-	list1.print();
-	//1
-	cout << "Push element up" << endl;
-	list1.pushUp("6");
-	list1.print();
-	//2
-	cout << "Push element by number" << endl;
-	list1.pushByNumber(6, "7");
-	list1.print();
-	//3
-	cout << "Move element to left" << endl;
-	list1.moveToLeft(2, 1);
-	list1.print();
+	List list, listCopy, listComb1, listComb2, commonList;
+	list.pushBack("5");
+	list.pushBack("2");
+	list.pushBack("3");
+	list.pushBack("1");
+	list.pushBack("4");
+	list.print();
+	while (true) {
+		cout << "1.Push back" << endl;
+		cout << "2.Push up" << endl;
+		cout << "3.Push by a number" << endl;
+		cout << "4.Move to right" << endl;
+		cout << "5.Move to left" << endl;
+		cout << "6.Delete by a number" << endl;
+		cout << "7.Delete every N element" << endl;
+		cout << "8.Sort by the increasing" << endl;
+		cout << "9.Sort by the decreasing" << endl;
+		cout << "10.Clear the list" << endl;
+		cout << "11.Print the list" << endl;
+		cout << "12.Create a copy of the list" << endl;
+		cout << "13.Combine two lists" << endl;
+		cout << "14.A list of the common elements" << endl;
+		cout << "15.Transer students" << endl;
 
-	cout << "Move element to right" << endl;
-	list1.moveToRight(1, 5);
-	list1.print();
-	//4
-	cout << "Delete element by number" << endl;
-	list1.deleteByNumber(6);
-	list1.print();
-	//5
-	cout << "Delete every n element" << endl;
-	list1.deleteEveryNElement(2);
-	list1.print();
-	//6
-	cout << "Sort by increasing" << endl;
-	list1.sortByIncrease();
-	list1.print();
-
-	cout << "Sort by decreasing" << endl;
-	list1.sortByDecrease();
-	list1.print();
-	//7
-	cout << "Creating a copy" << endl;
-	List list2 = list1.createCopy();
-	list1.print();
-	list2.print();
-	//8
-	cout << "Clearing the list" << endl;
-	list1.clearList();
-	list1.print();
-	list2.print();
-	List list3;
-	list3.pushBack("6");
-	list3.pushBack("4");
-	list3.pushBack("10");
-	//9
-	List list4 = list2.createCopy();
-	cout << "Combine two lists" << endl;
-	list2.print();
-	list3.print();
-	combineLists(list2, list3);
-	list2.print();
-	//10
-	cout << "List of common elements" << endl;
-	List common = commonElements(list3, list4);
-	common.print();
+		int option;
+		string element;
+		int position;
+		int steps;
+		int L, K;
+		cin >> option;
+		switch (option) {
+		case 1:
+			cout << "Enter the element" << endl;
+			cin >> element;
+			list.pushBack(element);
+			break;
+		case 2:
+			cout << "Enter the element" << endl;
+			cin >> element;
+			list.pushUp(element);
+			break;
+		case 3:
+			cout << "Enter the element and the position after which the element will be pushed" << endl;
+			cin >> element >> position;
+			list.pushByNumber(position, element);
+			break;
+		case 4: 
+			cout << "Enter the position of the element and the number of steps" << endl;
+			cin >> position >> steps;
+			list.moveToRight(position, steps);
+			break;
+		case 5: 
+			cout << "Enter the position of the element and the number of steps" << endl;
+			cin >> position >> steps;
+			list.moveToLeft(position, steps);
+			break;
+		case 6: 
+			cout << "Enter the position of the element" << endl;
+			cin >> position;
+			list.deleteByNumber(position);
+			break;
+		case 7:
+			cout << "Enter the step" << endl;
+			cin >> steps;
+			list.deleteEveryNElement(steps);
+			break;
+		case 8:
+			list.sortByIncrease();
+			break;
+		case 9:
+			list.sortByDecrease();
+			break;
+		case 10:
+			list.clearList();
+			break;
+		case 11:
+			list.print();
+			break;
+		case 12:
+			listCopy = list.createCopy();
+			listCopy.print();
+			list.print();
+			break;
+		case 13:
+			cout << "Enter the elements of the first list. Write 'e' to stop" << endl;
+			while (true) {
+				cin >> element;
+				if (element == "e") {
+					break;
+				}			
+				listComb1.pushBack(element);
+			}
+			cout << "Enter the elements of the second list. Write 'e' to stop" << endl;
+			while (true) {
+				cin >> element;
+				if (element == "e") {
+					break;
+				}
+				listComb2.pushBack(element);
+			}
+			combineLists(listComb1, listComb2);
+			listComb1.print();
+			break;
+		case 14:
+			cout << "Enter the elements of the first list. Write 'e' to stop" << endl;
+			while (true) {
+				cin >> element;
+				if (element == "e") {
+					break;
+				}
+				listComb1.pushBack(element);
+			}
+			cout << "Enter the elements of the second list. Write 'e' to stop" << endl;
+			while (true) {
+				cin >> element;
+				if (element == "e") {
+					break;
+				}
+				listComb2.pushBack(element);
+			}
+			commonList = commonElements(listComb1, listComb2);
+			commonList.print();
+			break;
+		case 15:
+			CircularList firstGroup, secondGroup;
+			cout << "Enter the students of the first group. Write 'e' to stop" << endl;
+			while (true) {
+				cin >> element;
+				if (element == "e") {
+					break;
+				}
+				firstGroup.pushBack(element);
+			}
+			cout << "Enter the students of the second group. Write 'e' to stop" << endl;
+			while (true) {
+				cin >> element;
+				if (element == "e") {
+					break;
+				}
+				secondGroup.pushBack(element);
+			}
+			cout << "First group: "; firstGroup.print();
+			cout << "Second group: "; secondGroup.print();
+			cout << "Enter the number of students and the position of start" << endl;
+			cin >> L >> K;
+			Node* current = firstGroup.head;
+			Node* lastPosition;
+			for (int j = 0; j < K - 1; j++) {
+				current = current->next;
+			}
+			for (int i = 0; i < L; i++) {
+				
+				lastPosition = current->next;
+				secondGroup.pushBack(current->surname);
+				firstGroup.deleteNode(K);
+				if (K - 1 == firstGroup.size) {
+					K = 1;
+				}
+				current = lastPosition;
+			}
+			cout << "First group: "; firstGroup.print();
+			cout << "Second group: "; secondGroup.print();
+			break;
+		}
+	}
+	
 }
 
