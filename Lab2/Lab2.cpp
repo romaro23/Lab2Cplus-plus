@@ -17,7 +17,6 @@ int getLength(Node* head) {
 	}
 	return length;
 }
-
 struct List {
 	Node* head;
 	List() : head(nullptr) {}
@@ -218,6 +217,16 @@ struct List {
 		}
 		cout << endl;
 	}
+	bool contains(string element) {
+		Node* node = head;
+		while (node) {
+			if (node->surname == element) {
+				return true;
+			}
+			node = node->next;
+		}
+		return false;
+	}
 	List createCopy() {
 		List newList;
 		Node* node = head;
@@ -324,7 +333,7 @@ List commonElements(List list1, List list2) {
 	while (node1) {
 		Node* node2 = list2.head;
 		while (node2) {		
-			if (node1->surname == node2->surname) {
+			if (node1->surname == node2->surname && !newList.contains(node1->surname)) {
 				newList.pushBack(node1->surname);
 			}
 			node2 = node2->next;
@@ -363,7 +372,8 @@ int main()
 		string element;
 		int position;
 		int steps;
-		int L, K;
+		int numberOfStudents, currentStep, count1, step, count2;
+		Node* lastPosition;
 		cin >> option;
 		switch (option) {
 		case 1:
@@ -478,22 +488,37 @@ int main()
 			}
 			cout << "First group: "; firstGroup.print();
 			cout << "Second group: "; secondGroup.print();
-			cout << "Enter the number of students and the position of start" << endl;
-			cin >> L >> K;
-			Node* current = firstGroup.head;
-			Node* lastPosition;
-			for (int j = 0; j < K - 1; j++) {
-				current = current->next;
+			cout << "Enter the number of students and the position of start" << endl;		
+			cin >> numberOfStudents >> currentStep;
+			if (numberOfStudents > firstGroup.size) {
+				cout << "Not enought students in the group" << endl;
+				break;
 			}
-			for (int i = 0; i < L; i++) {
-				
-				lastPosition = current->next;
-				secondGroup.pushBack(current->surname);
-				firstGroup.deleteNode(K);
-				if (K - 1 == firstGroup.size) {
-					K = 1;
+			Node* current = firstGroup.head;
+			count1 = 1;
+			step = currentStep;
+			while (count1 <= numberOfStudents) {
+				if (currentStep - step * count1 == 0) {
+					lastPosition = current->next;
+					secondGroup.pushBack(current->surname);							
+					count1++;
+					current = lastPosition;
 				}
-				current = lastPosition;
+				else {
+					current = current->next;
+				}
+				currentStep++;			
+			}
+			for(int i = 0; i < numberOfStudents; i++) {
+				if (i == 0) {
+					firstGroup.deleteNode(1);
+				}
+				else {
+					if (firstGroup.size < step) {
+						step--;
+					}
+					firstGroup.deleteNode(step);
+				}
 			}
 			cout << "First group: "; firstGroup.print();
 			cout << "Second group: "; secondGroup.print();
